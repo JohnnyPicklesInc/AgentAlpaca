@@ -27,9 +27,27 @@
   });
   var fit = new FitAddon.FitAddon();
   term.loadAddon(fit);
-  term.open(document.getElementById('terminal'));
-  fit.fit();
+  var termEl = document.getElementById('terminal');
+  term.open(termEl);
+
+  function refit() {
+    try {
+      fit.fit();
+    } catch (e) {}
+  }
+  refit();
   term.focus();
+
+  // On mobile the soft keyboard only opens after a real user gesture that lands
+  // on xterm's hidden input, and taps on the padding around the canvas miss it.
+  // Route any touch/click on the terminal box to term.focus() so tapping the
+  // screen reliably brings up the keyboard.
+  termEl.addEventListener('touchend', function () {
+    term.focus();
+  });
+  termEl.addEventListener('mousedown', function () {
+    term.focus();
+  });
 
   function setStatus(state, text) {
     statusEl.className = 'status ' + state;
@@ -86,18 +104,57 @@
     };
   }
 
+  function send(data) {
+    if (ws && ws.readyState === 1) ws.send(enc.encode(data));
+  }
+
+  // Sticky Ctrl: a phone keyboard has no Ctrl, so tapping the on-screen ctrl key
+  // arms it, and the next letter typed is folded into its control code (^A..^Z).
+  var ctrlArmed = false;
+  function setCtrl(on) {
+    ctrlArmed = on;
+    var b = document.querySelector('.key-toggle');
+    if (b) b.classList.toggle('active', on);
+  }
+
   // Keystrokes -> home PTY (binary frames).
   term.onData(function (data) {
-    if (ws && ws.readyState === 1) ws.send(enc.encode(data));
+    if (ctrlArmed && data.length === 1) {
+      var c = data.toUpperCase().charCodeAt(0);
+      if (c >= 64 && c <= 95) data = String.fromCharCode(c & 0x1f); // @A-Z[\]^_ -> ^@..^_
+      setCtrl(false);
+    }
+    send(data);
   });
 
-  // Keep xterm sized to the viewport; the home PTY size is authoritative, but
-  // fitting keeps the local rendering crisp.
-  window.addEventListener('resize', function () {
-    try {
-      fit.fit();
-    } catch (e) {}
+  var SEQ = {
+    esc: '\x1b',
+    tab: '\t',
+    '^c': '\x03',
+    up: '\x1b[A',
+    down: '\x1b[B',
+    right: '\x1b[C',
+    left: '\x1b[D',
+  };
+  document.getElementById('keybar').addEventListener('click', function (ev) {
+    var el = ev.target.closest('.key');
+    if (!el) return;
+    if (el.dataset.mod === 'ctrl') {
+      setCtrl(!ctrlArmed);
+    } else if (SEQ[el.dataset.seq]) {
+      send(SEQ[el.dataset.seq]);
+    }
+    term.focus(); // keep the soft keyboard up after tapping a key
   });
+
+  // Keep xterm sized to the visible viewport. The home PTY size is authoritative,
+  // but fitting keeps the local rendering crisp — and refitting when the soft
+  // keyboard opens/closes (visualViewport resize) stops it from hiding the prompt.
+  window.addEventListener('resize', refit);
+  window.addEventListener('orientationchange', refit);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', refit);
+  }
 
   connect();
 })();

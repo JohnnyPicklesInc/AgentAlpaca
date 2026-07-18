@@ -108,7 +108,12 @@ label { font-size: 13px; font-weight: 600; color: var(--muted); }
 .modal { max-width: 440px; width: 100%; }
 
 /* Terminal view */
-body.term-page { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+body.term-page {
+  display: flex; flex-direction: column; overflow: hidden;
+  height: 100vh;   /* fallback */
+  height: 100dvh;  /* tracks the *visible* viewport on mobile (browser chrome + soft keyboard) */
+  padding-bottom: env(safe-area-inset-bottom);
+}
 .term-bar {
   display: flex; align-items: center; gap: 12px; padding: 10px 16px;
   border-bottom: 1px solid var(--border); background: var(--panel);
@@ -120,6 +125,26 @@ body.term-page { display: flex; flex-direction: column; height: 100vh; overflow:
 .status.offline .dot { background: var(--err); }
 #terminal { flex: 1; min-height: 0; padding: 8px; background: #000; }
 .term-hint { font-size: 12px; color: var(--muted); padding: 6px 16px; border-top: 1px solid var(--border); background: var(--panel); }
+
+/* On-screen key bar — the keys a phone keyboard lacks but a coding agent needs.
+   Hidden on devices with a precise pointer (desktop) where the real keyboard has them. */
+.keybar { display: none; }
+@media (pointer: coarse) {
+  .keybar {
+    display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    padding: 8px 12px; border-top: 1px solid var(--border); background: var(--panel);
+  }
+  .term-hint { display: none; } /* reclaim vertical space on small screens */
+}
+.keybar .key {
+  flex: 0 0 auto; min-width: 44px; min-height: 40px; padding: 0 12px;
+  font: 600 15px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text); background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; user-select: none;
+}
+.keybar .key:active { background: #262633; }
+.keybar .key.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* Landing */
 .hero { text-align: center; padding: 8vh 0 4vh; }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Terminal · Agent Alpaca</title>
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#0e0e12" />
@@ -18,6 +18,16 @@
     <div class="status" id="status"><span class="dot"></span><span id="statusText">connecting…</span></div>
   </div>
   <div id="terminal"></div>
+  <div class="keybar" id="keybar" aria-label="Terminal keys">
+    <button type="button" class="key" data-seq="esc">esc</button>
+    <button type="button" class="key key-toggle" data-mod="ctrl">ctrl</button>
+    <button type="button" class="key" data-seq="tab">tab</button>
+    <button type="button" class="key" data-seq="^c">^C</button>
+    <button type="button" class="key" data-seq="left">←</button>
+    <button type="button" class="key" data-seq="up">↑</button>
+    <button type="button" class="key" data-seq="down">↓</button>
+    <button type="button" class="key" data-seq="right">→</button>
+  </div>
   <div class="term-hint">You're sharing this terminal — anything you type is sent as input to the agent at home.</div>
 
   <script src="/vendor/xterm.js"></script>

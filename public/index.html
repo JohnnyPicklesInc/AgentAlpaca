@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Alpaca · Talk to your agents from anywhere</title>
+  <meta name="description" content="Run your terminal agent at home, watch it live and send input from your laptop or phone. Lightweight, no screen-sharing." />
+  <meta name="theme-color" content="#7c5cff" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="/favicon.svg" alt="" /> Agent Alpaca</div>
+    <a class="btn btn-primary btn-sm" href="/login.html">Sign in</a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>🦙 Talk to your agents from anywhere</h1>
+      <p>Your coding agent is running on the computer at home. You're on your laptop at a café. Agent Alpaca shows you the live terminal and lets you type back — no screen-share, no VNC.</p>
+      <a class="btn btn-primary" href="/login.html">Get started</a>
+    </section>
+
+    <section class="steps">
+      <div class="step">
+        <h3><span class="n">1.</span> Pair once</h3>
+        <p class="muted">Sign in, click <em>Add a bridge</em>, and run the pairing command on your home machine.</p>
+      </div>
+      <div class="step">
+        <h3><span class="n">2.</span> Wrap your agent</h3>
+        <p class="muted">Start it through Alpaca instead of directly:</p>
+        <pre class="cmd mono">alpaca -- claude</pre>
+      </div>
+      <div class="step">
+        <h3><span class="n">3.</span> Watch from anywhere</h3>
+        <p class="muted">Open this app on any device, pick the session, and you're looking at the same live terminal.</p>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:28px">
+      <h3 style="margin-top:0">How it works</h3>
+      <p class="muted">The <span class="mono">alpaca</span> command wraps your agent in a real pseudo-terminal on the home machine and mirrors it — both directions — through a per-session relay. You keep using the terminal locally as normal; remote input is injected right into it. Terminal bytes stream through and are never stored on the server.</p>
+    </section>
+  </main>
+</body>
+</html>

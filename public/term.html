@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terminal · Agent Alpaca</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0e0e12" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/vendor/xterm.css" />
+</head>
+<body class="term-page">
+  <div class="term-bar">
+    <a class="btn btn-sm btn-ghost" href="/app.html" title="Back to sessions">←</a>
+    <div class="title" id="title">terminal</div>
+    <div style="flex:1"></div>
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">connecting…</span></div>
+  </div>
+  <div id="terminal"></div>
+  <div class="term-hint">You're sharing this terminal — anything you type is sent as input to the agent at home.</div>
+
+  <script src="/vendor/xterm.js"></script>
+  <script src="/vendor/addon-fit.js"></script>
+  <script src="/term.js"></script>
+</body>
+</html>

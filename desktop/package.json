@@ -1,0 +1,31 @@
+{
+  "name": "agentalpaca-desktop",
+  "version": "0.1.0",
+  "description": "Agent Alpaca host — a menu-bar app that launches your agents and streams them to Agent Alpaca so you can watch and drive them from anywhere.",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "rebuild": "electron-rebuild -f -w node-pty",
+    "postinstall": "node scripts/postinstall.js && electron-rebuild -f -w node-pty",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "app.agentalpaca.host",
+    "productName": "Agent Alpaca",
+    "files": ["main.js", "preload.js", "renderer/**", "lib/**", "vendor/**", "assets/**"],
+    "mac": { "category": "public.app-category.developer-tools", "target": ["dmg"] },
+    "win": { "target": ["nsis"] },
+    "linux": { "target": ["AppImage"] }
+  }
+}

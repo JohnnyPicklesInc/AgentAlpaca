@@ -1,0 +1,20 @@
+{
+  "name": "@agentalpaca/cli",
+  "version": "0.1.0",
+  "description": "Agent Alpaca bridge — wrap a terminal command and mirror it to Agent Alpaca so you can watch and drive it from anywhere.",
+  "type": "commonjs",
+  "bin": {
+    "alpaca": "bin/alpaca.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "ws": "^8.18.0"
+  },
+  "license": "MIT"
+}

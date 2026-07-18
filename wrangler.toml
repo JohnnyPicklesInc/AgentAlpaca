@@ -1,0 +1,52 @@
+name = "agentalpaca"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Serve the app on the custom domain (auto-provisions a proxied DNS record + edge
+# TLS cert on the agentalpaca.app zone). Cloudflare Access will sit in front of
+# this hostname; once Access is verified we set `workers_dev = false` so the
+# unprotected workers.dev URL can't be used to bypass it.
+routes = [
+  { pattern = "agentalpaca.app", custom_domain = true },
+  { pattern = "www.agentalpaca.app", custom_domain = true },
+]
+workers_dev = true
+
+# Static PWA assets (login, app shell, xterm terminal view) are served directly
+# by the platform; the Worker only runs for /api/* and /ws/* (no asset matches
+# those paths). `_headers` / `_redirects` in ./public are honored just like Pages.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[vars]
+# Base URL used to build the OAuth redirect_uri in production. Must exactly match
+# a registered Authorized redirect URI. Locally, .dev.vars overrides this with the
+# dev origin. (GOOGLE_CLIENT_ID/SECRET are set via `wrangler secret put`.)
+OAUTH_BASE_URL = "https://agentalpaca.app"
+
+# Accounts + bridge tokens + the session registry. No terminal content is stored
+# here — live bytes flow through the Durable Object and are never persisted to D1.
+# Create with `wrangler d1 create agentalpaca` and paste the id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "agentalpaca"
+database_id = "97bb0049-6ad6-481d-9c05-51400e00ba51"
+
+# Short-lived magic-link + bridge-pairing codes (self-expiring via KV TTL).
+# Create with `wrangler kv namespace create agentalpaca-tokens` and paste the id.
+# `wrangler dev` simulates the namespace locally, so any placeholder works.
+[[kv_namespaces]]
+binding = "TOKENS_KV"
+id = "99abff20da6b44aeb9cbe803d8a47a56"
+
+# One live relay hub per terminal session: the home bridge socket on one side,
+# any number of laptop viewer sockets on the other. Holds only an in-memory
+# scrollback so a viewer that joins mid-session sees the current screen.
+[[durable_objects.bindings]]
+name = "SESSIONS"
+class_name = "AlpacaSession"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AlpacaSession"]

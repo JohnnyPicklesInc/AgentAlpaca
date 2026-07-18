@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your sessions · Agent Alpaca</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#7c5cff" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="/favicon.svg" alt="" /> Agent Alpaca</div>
+    <div style="display:flex; gap:10px">
+      <button class="btn btn-primary btn-sm" id="addBridge">+ Add a bridge</button>
+      <button class="btn btn-ghost btn-sm" id="logout">Sign out</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h2 style="margin:6px 0 2px">Sessions</h2>
+    <p class="muted" style="margin-top:0">Live terminals from your paired machines. Tap one to watch and type.</p>
+    <div id="list" class="session-list"></div>
+    <div id="empty" class="empty" hidden>
+      <p>No live sessions yet.</p>
+      <p class="muted">Pair a machine, then run <span class="mono">alpaca -- claude</span> (or any command) on it.</p>
+    </div>
+
+    <section id="passkeys" style="margin-top:36px" hidden>
+      <h3 style="margin-bottom:2px">Passkeys</h3>
+      <p class="muted" style="margin-top:0">Add a passkey to sign in with Face ID / Touch ID next time — no Google round-trip.</p>
+      <div id="passkeyList" class="session-list"></div>
+      <button class="btn btn-sm" id="addPasskey" style="margin-top:12px">+ Add a passkey</button>
+      <div id="passkeyMsg"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal-backdrop" hidden>
+    <div class="card modal">
+      <h3 style="margin-top:0">Pair a home machine</h3>
+      <p class="muted">In the Agent Alpaca app on the computer running your agents, enter this code:</p>
+      <div class="code-box mono" id="pairCmd">…</div>
+      <button class="btn btn-sm" id="copyCode" style="width:100%">Copy code</button>
+      <p class="muted small" id="pairNote" style="margin-top:12px">Expires in 10 minutes · single use. Prefer the CLI? Run <span class="mono" id="pairCli"></span></p>
+      <div style="display:flex; gap:10px; justify-content:flex-end">
+        <button class="btn btn-sm" id="closeModal">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendor/simplewebauthn-browser.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

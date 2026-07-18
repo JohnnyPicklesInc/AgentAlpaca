@@ -1,0 +1,23 @@
+{
+  "name": "agentalpaca",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Agent Alpaca — a lightweight way to watch and talk to your terminal agents from anywhere. Run `alpaca -- claude` at home; see the live terminal and send input from your laptop.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "selftest": "node scripts/selftest.mjs",
+    "vendor": "node scripts/vendor-xterm.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "@simplewebauthn/browser": "^13.3.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^13.3.2"
+  }
+}

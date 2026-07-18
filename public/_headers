@@ -1,0 +1,12 @@
+# Strict baseline for every page. All JS is first-party (xterm.js is vendored
+# into /vendor, not loaded from a CDN), so a single strict CSP covers the site.
+# connect-src 'self' also authorizes the same-origin WebSocket relay (wss://).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+
+/sw.js
+  Service-Worker-Allowed: /
+  Cache-Control: no-cache

@@ -1,0 +1,37 @@
+# Local dev config for `wrangler dev`. Copy this file to `.dev.vars`
+# (which is gitignored) and it is picked up automatically:  cp .dev.vars.example .dev.vars
+#
+# These are DEV-ONLY values, safe to commit as a template. In production set the
+# real ones with:  wrangler secret put SESSION_SECRET   (etc.) — never reuse these.
+
+# Signs stateless session cookies (HMAC-SHA-256). Replace with a long random
+# value in production.
+SESSION_SECRET=dev-only-session-secret-change-me-0123456789abcdef
+
+# Resend API key for sending magic-link emails. In dev, if this is unset the
+# sign-in link is logged to the console instead of emailed (see src/api/auth.js).
+RESEND_API_KEY=
+
+# Local-dev only: echo the magic-link token in the API response so the login page
+# can offer a one-click "continue sign-in" link without email. This file is never
+# deployed, so production never echoes tokens. Do NOT set this in production.
+DEV_MAGIC_ECHO=1
+
+# Google Sign-In (no email needed). Create an OAuth client at
+# https://console.cloud.google.com/apis/credentials (type: Web application) and
+# add these Authorized redirect URIs:
+#   http://127.0.0.1:8796/api/auth/google/callback   (local dev)
+#   https://agentalpaca.app/api/auth/google/callback  (production)
+# The client id is public; the secret is not. In production set both with
+#   wrangler secret put GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Base URL for building the OAuth redirect_uri AND the WebAuthn rpID/origin. MUST
+# be set (don't rely on request.url — under `wrangler dev` a custom-domain route
+# makes it report the production host). Must exactly match a registered Authorized
+# redirect URI. Use `localhost`, NOT `127.0.0.1`: WebAuthn rejects IP addresses as
+# an rpID, but allows localhost.
+#   local dev:   http://localhost:8796
+#   production:  https://agentalpaca.app   (set as a Worker var/secret)
+OAUTH_BASE_URL=http://localhost:8796

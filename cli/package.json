@@ -9,6 +9,31 @@
   "engines": {
     "node": ">=18"
   },
+  "files": [
+    "bin/",
+    "scripts/",
+    "README.md"
+  ],
+  "keywords": [
+    "terminal",
+    "pty",
+    "agent",
+    "claude",
+    "remote",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnnyPicklesInc/AgentAlpaca.git",
+    "directory": "cli"
+  },
+  "homepage": "https://github.com/JohnnyPicklesInc/AgentAlpaca#readme",
+  "bugs": {
+    "url": "https://github.com/JohnnyPicklesInc/AgentAlpaca/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "postinstall": "node scripts/postinstall.js"
   },

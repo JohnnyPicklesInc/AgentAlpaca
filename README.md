@@ -4,12 +4,26 @@ A lightweight way to **watch and talk to your terminal agents from anywhere.**
 Your coding agent runs on the computer at home; Agent Alpaca shows you the live
 terminal on your laptop or phone and lets you type back — no screen-share, no VNC.
 
-```
+```bash
 alpaca -- claude        # on the home machine
 ```
 
 …then open the web app on any device, pick the session, and you're looking at
 (and driving) the same live terminal.
+
+## Install the CLI
+
+One line — no npm account, no global npm install:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/JohnnyPicklesInc/AgentAlpaca/main/install.sh | sh
+```
+
+This downloads the `alpaca` bridge, installs its deps, and links an `alpaca`
+command onto your PATH (override the location with `ALPACA_BIN`/`ALPACA_HOME`).
+Requires Node.js 18+. Prebuilt `node-pty` binaries are bundled for macOS and
+Windows (no compiler needed); on Linux `npm` builds it from source. See
+[`cli/`](cli/) for the full command list.
 
 ## How it works
 
@@ -57,6 +71,7 @@ npm run dev              # wrangler dev -> http://localhost:8787
 3. In `cli/`: `npm install` (a postinstall step restores node-pty's
    `spawn-helper` exec bit, which npm extraction sometimes drops) then
    `node bin/alpaca.js pair ALPACA-XXXX --server http://localhost:8787`.
+   (End users instead run `npx @agentalpaca/cli` — see **Install the CLI**.)
 4. `node bin/alpaca.js -- bash` (or `-- claude`).
 5. Back in the web app, the session appears **live** — open it and type.
 

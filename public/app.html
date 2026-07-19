@@ -40,10 +40,13 @@
   <div id="modal" class="modal-backdrop" hidden>
     <div class="card modal">
       <h3 style="margin-top:0">Pair a home machine</h3>
-      <p class="muted">In the Agent Alpaca app on the computer running your agents, enter this code:</p>
+      <p class="muted"><strong>1.</strong> On the computer running your agents, install the bridge (once):</p>
+      <div class="code-box mono" id="installCmd">curl -fsSL https://raw.githubusercontent.com/JohnnyPicklesInc/AgentAlpaca/main/install.sh | sh</div>
+      <button class="btn btn-sm" id="copyInstall" style="width:100%">Copy install command</button>
+      <p class="muted" style="margin-top:16px"><strong>2.</strong> Then run this to link it (expires in 10 minutes · single use):</p>
       <div class="code-box mono" id="pairCmd">…</div>
-      <button class="btn btn-sm" id="copyCode" style="width:100%">Copy code</button>
-      <p class="muted small" id="pairNote" style="margin-top:12px">Expires in 10 minutes · single use. Prefer the CLI? Run <span class="mono" id="pairCli"></span></p>
+      <button class="btn btn-sm btn-primary" id="copyCode" style="width:100%">Copy pair command</button>
+      <p class="muted small" id="pairNote" style="margin-top:12px">Needs Node.js 18+. Already installed <span class="mono">alpaca</span>? Just run step 2.</p>
       <div style="display:flex; gap:10px; justify-content:flex-end">
         <button class="btn btn-sm" id="closeModal">Done</button>
       </div>

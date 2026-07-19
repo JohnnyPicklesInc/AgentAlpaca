@@ -90,16 +90,15 @@ document.getElementById('addBridge').addEventListener('click', async () => {
       pairNote.textContent = `Could not create a pairing code (HTTP ${r.status}${data.error ? ': ' + data.error : ''}). Try again.`;
       return;
     }
-    pairCmd.textContent = data.code; // bare code — what the app needs
-    const cli = document.getElementById('pairCli');
-    if (cli) cli.textContent = `alpaca pair ${data.code}`;
+    const pairCommand = `alpaca pair ${data.code}`;
+    pairCmd.textContent = pairCommand;
     const copyBtn = document.getElementById('copyCode');
     if (copyBtn) {
       copyBtn.onclick = async () => {
         try {
-          await navigator.clipboard.writeText(data.code);
+          await navigator.clipboard.writeText(pairCommand);
           copyBtn.textContent = 'Copied ✓';
-          setTimeout(() => (copyBtn.textContent = 'Copy code'), 1500);
+          setTimeout(() => (copyBtn.textContent = 'Copy pair command'), 1500);
         } catch {}
       };
     }
@@ -108,6 +107,16 @@ document.getElementById('addBridge').addEventListener('click', async () => {
     pairNote.textContent = 'Could not reach the server: ' + (e && e.message ? e.message : e);
   }
 });
+const copyInstall = document.getElementById('copyInstall');
+if (copyInstall) {
+  copyInstall.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById('installCmd').textContent.trim());
+      copyInstall.textContent = 'Copied ✓';
+      setTimeout(() => (copyInstall.textContent = 'Copy install command'), 1500);
+    } catch {}
+  });
+}
 document.getElementById('closeModal').addEventListener('click', () => {
   modal.hidden = true;
   refresh();

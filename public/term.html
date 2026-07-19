@@ -12,9 +12,10 @@
 </head>
 <body class="term-page">
   <div class="term-bar">
-    <a class="btn btn-sm btn-ghost" href="/app.html" title="Back to sessions">←</a>
+    <a class="btn btn-sm btn-ghost" href="/grid.html" title="Back">←</a>
     <div class="title" id="title">terminal</div>
     <div style="flex:1"></div>
+    <button type="button" class="btn btn-sm btn-ghost" id="fitToggle" title="Switch between fit-to-screen and actual size">1:1</button>
     <div class="status" id="status"><span class="dot"></span><span id="statusText">connecting…</span></div>
   </div>
   <div id="terminal"></div>
@@ -31,7 +32,6 @@
   <div class="term-hint">You're sharing this terminal — anything you type is sent as input to the agent at home.</div>
 
   <script src="/vendor/xterm.js"></script>
-  <script src="/vendor/addon-fit.js"></script>
   <script src="/term.js"></script>
 </body>
 </html>

@@ -4,7 +4,9 @@
  *   - binary in  = terminal output -> term.write
  *   - binary out = keystrokes      -> sent to the home PTY
  *   - text (JSON) = control (hello / meta / status / exit)
- * Loaded as a classic script; Terminal + FitAddon come from the vendored UMD builds.
+ * Loaded as a classic script; Terminal comes from the vendored UMD build. The
+ * viewer mirrors the home PTY's exact cols/rows and scales the grid to fit the
+ * screen (see layout()) rather than reflowing — reflowing corrupts TUI output.
  */
 (function () {
   var sid = new URLSearchParams(location.search).get('s');
@@ -25,21 +27,73 @@
     scrollback: 5000,
     theme: { background: '#000000', foreground: '#e7e7ef', cursor: '#7c5cff' },
   });
-  var fit = new FitAddon.FitAddon();
-  term.loadAddon(fit);
   var termEl = document.getElementById('terminal');
   term.open(termEl);
+  // The .xterm-screen holds the real grid canvases sized to cols*rows; .xterm
+  // itself just stretches to fill the parent, so scale the screen, not .xterm.
+  var screenEl = termEl.querySelector('.xterm-screen') || term.element;
 
-  function refit() {
-    try {
-      fit.fit();
-    } catch (e) {}
+  // Display mode:
+  //   'fit' — scale the whole terminal to fit the screen, like a screen-share,
+  //           so a wide grid shows in full with nothing overlapping.
+  //   '1:1' — native size; scroll to see the rest.
+  var mode = 'fit';
+
+  // Mirror the home PTY's EXACT grid. A viewer must render at the same cols/rows
+  // the program drew for; otherwise cursor-addressed output (shell prompts, TUIs
+  // like claude/vim) writes to columns the viewer doesn't have and overwrites
+  // itself. So we never reflow to the phone width — we adopt the reported size
+  // and scale the result to fit.
+  function setDims(cols, rows) {
+    if (
+      Number.isInteger(cols) &&
+      Number.isInteger(rows) &&
+      cols > 0 &&
+      rows > 0 &&
+      (cols !== term.cols || rows !== term.rows)
+    ) {
+      try {
+        term.resize(cols, rows);
+      } catch (e) {}
+    }
+    requestAnimationFrame(layout);
+  }
+
+  function layout() {
+    if (!screenEl) return;
+    if (mode === '1:1') {
+      screenEl.style.transform = '';
+      termEl.style.overflow = 'auto';
+      try {
+        term.scrollToBottom();
+      } catch (e) {}
+      return;
+    }
+    termEl.style.overflow = 'hidden';
+    var natW = screenEl.offsetWidth;
+    var natH = screenEl.offsetHeight;
+    if (!natW || !natH) return;
+    var scale = Math.min(termEl.clientWidth / natW, termEl.clientHeight / natH);
+    if (!isFinite(scale) || scale <= 0) scale = 1;
+    var offX = Math.max(0, (termEl.clientWidth - natW * scale) / 2);
+    var offY = Math.max(0, (termEl.clientHeight - natH * scale) / 2);
+    screenEl.style.transformOrigin = '0 0';
+    screenEl.style.transform = 'translate(' + offX + 'px,' + offY + 'px) scale(' + scale + ')';
+  }
+
+  var fitToggle = document.getElementById('fitToggle');
+  if (fitToggle) {
+    fitToggle.addEventListener('click', function () {
+      mode = mode === 'fit' ? '1:1' : 'fit';
+      fitToggle.textContent = mode === 'fit' ? '1:1' : 'Fit';
+      layout();
+    });
   }
 
   // Keep the page sized to the area *above* the soft keyboard. On mobile a
   // dvh-tall page does NOT shrink when the keyboard opens, so the prompt hides
-  // behind it. Pin the body to visualViewport.height instead, then refit xterm
-  // and scroll so the cursor line stays visible right above the key bar.
+  // behind it. Pin the body to visualViewport.height instead, then re-scale the
+  // terminal into the smaller area so it stays fully visible above the key bar.
   var vv = window.visualViewport;
   function syncViewport() {
     if (vv) {
@@ -47,7 +101,7 @@
       // iOS may scroll the layout viewport under the keyboard; pull it back.
       if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
     }
-    refit();
+    layout();
     try {
       term.scrollToBottom();
     } catch (e) {}
@@ -98,6 +152,7 @@
             titleEl.textContent = m.title;
             document.title = m.title + ' · Agent Alpaca';
           }
+          setDims(m.cols, m.rows); // match the home PTY grid, then re-scale to fit
           setStatus(m.bridgeOnline ? 'online' : 'offline', m.bridgeOnline ? 'live' : 'home offline');
         } else if (m.t === 'status') {
           setStatus(m.bridgeOnline ? 'online' : 'offline', m.bridgeOnline ? 'live' : 'home offline');

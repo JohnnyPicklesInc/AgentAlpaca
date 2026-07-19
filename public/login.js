@@ -23,7 +23,7 @@ if (supported()) {
       show('Waiting for your passkey…', 'msg-ok');
       try {
         await signInWithPasskey();
-        location.replace('/app.html');
+        location.replace('/grid.html');
       } catch (e) {
         show(friendlyError(e), 'msg-err');
         passkeyBtn.disabled = false;
@@ -37,7 +37,7 @@ if (supported()) {
       show('Creating your account…', 'msg-ok');
       try {
         await signUpWithPasskey();
-        location.replace('/app.html');
+        location.replace('/grid.html');
       } catch (err) {
         show(friendlyError(err), 'msg-err');
       }

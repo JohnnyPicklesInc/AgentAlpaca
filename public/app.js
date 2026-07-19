@@ -70,7 +70,8 @@ async function refresh() {
 }
 
 // --- pairing ---
-document.getElementById('addBridge').addEventListener('click', async () => {
+const addBridge = document.getElementById('addBridge');
+addBridge.addEventListener('click', async () => {
   pairCmd.textContent = 'requesting…';
   pairNote.textContent = 'This code expires in 10 minutes and can be used once.';
   modal.hidden = false;
@@ -132,6 +133,12 @@ document.getElementById('logout').addEventListener('click', async () => {
 
 refresh();
 setInterval(refresh, 4000);
+
+// Deep link from the grid view (/app.html#pair) opens the pairing modal straight away.
+if (location.hash === '#pair') {
+  history.replaceState(null, '', location.pathname);
+  addBridge.click();
+}
 
 // --- passkeys ---
 const pkSection = document.getElementById('passkeys');

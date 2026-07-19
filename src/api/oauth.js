@@ -1,7 +1,7 @@
 /**
  * Google Sign-In endpoints (authorization-code flow). No email, no passwords.
  *   GET /api/auth/google/start     -> 302 to Google's consent screen
- *   GET /api/auth/google/callback  -> verifies, upserts user, sets session, -> /app.html
+ *   GET /api/auth/google/callback  -> verifies, upserts user, sets session, -> /grid.html
  *
  * CSRF/replay protection: a random `state` (with a bound `nonce`) is stored in KV
  * for 10 minutes and consumed on callback.
@@ -100,7 +100,7 @@ export async function googleCallback({ request, env }) {
   const session = await signSession(env.SESSION_SECRET, user.id, Date.now() / 1000);
   return new Response(null, {
     status: 302,
-    headers: { location: '/app.html', 'set-cookie': sessionCookie(session, SESSION_TTL, isHttps(request)) },
+    headers: { location: '/grid.html', 'set-cookie': sessionCookie(session, SESSION_TTL, isHttps(request)) },
   });
 }
 

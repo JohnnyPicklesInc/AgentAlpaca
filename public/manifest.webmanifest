@@ -2,7 +2,7 @@
   "name": "Agent Alpaca",
   "short_name": "Alpaca",
   "description": "Watch and talk to your terminal agents from anywhere.",
-  "start_url": "/app.html",
+  "start_url": "/grid.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0e0e12",

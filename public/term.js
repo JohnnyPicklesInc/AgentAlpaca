@@ -35,7 +35,25 @@
       fit.fit();
     } catch (e) {}
   }
-  refit();
+
+  // Keep the page sized to the area *above* the soft keyboard. On mobile a
+  // dvh-tall page does NOT shrink when the keyboard opens, so the prompt hides
+  // behind it. Pin the body to visualViewport.height instead, then refit xterm
+  // and scroll so the cursor line stays visible right above the key bar.
+  var vv = window.visualViewport;
+  function syncViewport() {
+    if (vv) {
+      document.body.style.height = vv.height + 'px';
+      // iOS may scroll the layout viewport under the keyboard; pull it back.
+      if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
+    }
+    refit();
+    try {
+      term.scrollToBottom();
+    } catch (e) {}
+  }
+
+  syncViewport();
   term.focus();
 
   // On mobile the soft keyboard only opens after a real user gesture that lands
@@ -148,12 +166,14 @@
   });
 
   // Keep xterm sized to the visible viewport. The home PTY size is authoritative,
-  // but fitting keeps the local rendering crisp — and refitting when the soft
-  // keyboard opens/closes (visualViewport resize) stops it from hiding the prompt.
-  window.addEventListener('resize', refit);
-  window.addEventListener('orientationchange', refit);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', refit);
+  // but fitting keeps the local rendering crisp — and re-syncing when the soft
+  // keyboard opens/closes (visualViewport resize/scroll) stops it from hiding the
+  // prompt behind the keyboard.
+  window.addEventListener('resize', syncViewport);
+  window.addEventListener('orientationchange', syncViewport);
+  if (vv) {
+    vv.addEventListener('resize', syncViewport);
+    vv.addEventListener('scroll', syncViewport);
   }
 
   connect();

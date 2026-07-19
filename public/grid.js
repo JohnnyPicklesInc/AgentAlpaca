@@ -33,7 +33,8 @@
     var subEl = tile.querySelector('.sub');
     var statusEl = tile.querySelector('.tstatus');
     var termHost = tile.querySelector('.tile-term');
-    tile.querySelector('.expand').href = '/term.html?s=' + encodeURIComponent(s.id);
+    var expandUrl = '/term.html?s=' + encodeURIComponent(s.id);
+    tile.querySelector('.expand').href = expandUrl;
     titleEl.textContent = s.label || 'terminal';
     subEl.textContent = s.cmd || '';
     gridEl.appendChild(tile);
@@ -55,12 +56,21 @@
     }
     refit();
 
-    // Focus the terminal (and highlight the tile) when tapped, so keystrokes go here.
-    termHost.addEventListener('mousedown', function () {
+    // On desktop, tapping focuses the tile so keystrokes go here. On phones a
+    // 260px tile is too cramped to type in (and the soft keyboard would bury it),
+    // so a tap opens the full-screen, keyboard-aware view instead.
+    var coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    function activate() {
+      if (coarse) {
+        location.href = expandUrl;
+        return;
+      }
       term.focus();
-    });
-    termHost.addEventListener('touchend', function () {
-      term.focus();
+    }
+    termHost.addEventListener('mousedown', activate);
+    termHost.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      activate();
     });
     term.textarea &&
       term.textarea.addEventListener('focus', function () {
